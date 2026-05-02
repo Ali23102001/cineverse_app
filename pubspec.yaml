@@ -1,0 +1,21 @@
+name: cineverse
+description: A cinematic movie app powered by TMDB API and Firebase.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+
+  # Firebase
+  firebase_core: ^3.0.0
+  firebase_auth: ^5.0.0
+  cloud_firestore: ^5.6.12
+  google_sign_in: ^6.2.1
+
+
+flutter:
+  uses-material-design: true
