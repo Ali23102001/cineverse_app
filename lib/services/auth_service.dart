@@ -4,6 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// AuthService — كل العمليات بتاعة المستخدمين عن طريق Firebase
 class AuthService {
+  // ── Admin Email ──────────────────────────────────
+  static const String adminEmail = 'alimohammed4h2@gmail.com';
+
+  /// هل المستخدم الحالي هو الأدمن؟
+  bool get isAdmin =>
+      _auth.currentUser != null &&
+      _auth.currentUser!.email?.toLowerCase() == adminEmail.toLowerCase();
+
   // Firebase instances
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;

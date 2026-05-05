@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/movie.dart';
+import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
 import 'search_screen.dart';
@@ -19,7 +20,14 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _tab = 0;
   final List<Movie> _favorites = [];
+  late final bool _isAdmin;
   final List<Movie> _watchlist = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _isAdmin = AuthService().isAdmin;
+  }
 
   void _toggleFavorite(Movie movie) {
     setState(() {
@@ -43,18 +51,18 @@ class _MainShellState extends State<MainShell> {
     });
   }
 
-  static const _navItems = [
-    _NavItem(icon: Icons.home_rounded,       label: 'HOME'),
-    _NavItem(icon: Icons.search_rounded,     label: 'SEARCH'),
-    _NavItem(icon: Icons.movie_outlined,     label: 'MOVIES'),
-    _NavItem(icon: Icons.favorite_border,    label: 'FAVORITES'),
-    _NavItem(icon: Icons.person_outline,     label: 'PROFILE'),
-    _NavItem(icon: Icons.dashboard_outlined, label: 'DASHBOARD'),
+  List<_NavItem> get _navItems => [
+    const _NavItem(icon: Icons.home_rounded,       label: 'HOME'),
+    const _NavItem(icon: Icons.search_rounded,     label: 'SEARCH'),
+    const _NavItem(icon: Icons.movie_outlined,     label: 'MOVIES'),
+    const _NavItem(icon: Icons.favorite_border,    label: 'FAVORITES'),
+    const _NavItem(icon: Icons.person_outline,     label: 'PROFILE'),
+    if (_isAdmin) const _NavItem(icon: Icons.dashboard_outlined, label: 'DASHBOARD'),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final pages = [
+    final pages = <Widget>[
       HomeScreen(
         favorites: _favorites, watchlist: _watchlist,
         onToggleFavorite: _toggleFavorite, onToggleWatchlist: _toggleWatchlist,
@@ -78,7 +86,7 @@ class _MainShellState extends State<MainShell> {
         favorites: _favorites,
         watchlist: _watchlist,
       ),
-      const DashboardScreen(),
+      if (_isAdmin) const DashboardScreen(),
     ];
 
     return Scaffold(
