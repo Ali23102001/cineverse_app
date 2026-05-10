@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 
 /// AuthService — كل العمليات بتاعة المستخدمين عن طريق Firebase
 class AuthService {
@@ -15,9 +16,15 @@ class AuthService {
   // Firebase instances
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  // ── Google Sign-In ──────────────────────────────────
+  // على Android مش محتاج clientId — بيستخدم google-services.json تلقائياً
+  // على Web لازم نبعت clientId
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId:
-        '739346128775-oj6r57at8434k5si1cbtjasks3hrckln.apps.googleusercontent.com',
+    scopes: ['email', 'profile'],
+    clientId: kIsWeb
+        ? '739346128775-oj6r57at8434k5si1cbtjasks3hrckln.apps.googleusercontent.com'
+        : null,
     serverClientId:
         '739346128775-oj6r57at8434k5si1cbtjasks3hrckln.apps.googleusercontent.com',
   );
@@ -110,7 +117,9 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       throw _handleAuthError(e);
     } catch (e) {
-      throw 'Google Sign-In failed. Please try again.';
+      // اعرض الخطأ الحقيقي عشان نعرف المشكلة
+      debugPrint('Google Sign-In Error: $e');
+      throw 'Google Sign-In failed: $e';
     }
   }
 
